@@ -24,6 +24,7 @@ namespace NinetiesTVMVC.Controllers
         {
             //using the default pageSize of 5
             var vm = _showRepo.Get(search, genreId, page == 0 ? 1 : page);
+            vm.Genres = _showRepo.GetGenres();
            // if we had to adjust the page based on total results, redirect using the new page
             if (page != vm.Page)
             {
@@ -50,7 +51,12 @@ namespace NinetiesTVMVC.Controllers
         // GET: Show/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var show = _showRepo.Get(id);
+            if (show == null)
+            {
+                return NotFound();
+            }
+            return View(show);
         }
     }
 }

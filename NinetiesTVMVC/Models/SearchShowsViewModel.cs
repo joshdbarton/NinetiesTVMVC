@@ -8,6 +8,8 @@ namespace NinetiesTVMVC.Models
     public class SearchShowsViewModel
     {
         public List<Show> Shows { get; set; }
+
+        public List<Genre> Genres { get; set; }
         public int GenreId { get; set; }
         public string QueryString { get; set; }
 

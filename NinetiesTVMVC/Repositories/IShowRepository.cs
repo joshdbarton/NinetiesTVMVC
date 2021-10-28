@@ -7,5 +7,6 @@ namespace NinetiesTVMVC.Repositories
     {
         Show Get(int id);
         SearchShowsViewModel Get(string queryString, int genreId, int page = 1, int pageSize = 5);
+        List<Genre> GetGenres();
     }
 }

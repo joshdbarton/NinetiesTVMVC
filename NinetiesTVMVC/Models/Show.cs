@@ -9,9 +9,17 @@ namespace NinetiesTVMVC.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+
+        [DisplayName("Start Year")]
         public int StartYear { get; set; }
+        
+        [DisplayName("End Year")]
         public int EndYear { get; set; }
+
+        [DisplayName("Episode Count")]
         public int EpisodeCount { get; set; }
+
+        [DisplayName("IMDb Rating")]
         public double ImdbRating { get; set; }
 
         public List<Genre> Genres { get; set; }

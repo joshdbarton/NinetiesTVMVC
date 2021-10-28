@@ -128,8 +128,69 @@ namespace NinetiesTVMVC.Repositories
         public Show Get(int id)
         {
             Show show = null;
+            using var conn = Connection;
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"select s.*, g.Id GenreId, g.GenreName
+                                FROM Show s 
+                                LEFT JOIN ShowGenre sg ON sg.ShowId = s.Id
+                                LEFT JOIN Genre g ON g.Id = sg.GenreId
+                                WHERE s.Id = @id";
+
+            cmd.Parameters.AddWithValue("@id", id);
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                if (show == null)
+                {
+                    show = new Show
+                    {
+                        Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                        Name = reader.GetString(reader.GetOrdinal("Name")),
+                        StartYear = reader.GetInt16(reader.GetOrdinal("StartYear")),
+                        EndYear = reader.GetInt16(reader.GetOrdinal("EndYear")),
+                        EpisodeCount = reader.GetInt16(reader.GetOrdinal("EpisodeCount")),
+                        ImdbRating = reader.GetDouble(reader.GetOrdinal("ImdbRating")),
+                        Genres = new List<Genre>()
+                    };
+
+                }
+
+                if (!reader.IsDBNull(reader.GetOrdinal("GenreId")))
+                {
+                    show.Genres.Add(new Genre
+                    {
+                        Id = reader.GetInt32(reader.GetOrdinal("GenreId")),
+                        GenreName = reader.GetString(reader.GetOrdinal("GenreName"))
+                    });
+                }
+            }
 
             return show;
+        }
+
+        public List<Genre> GetGenres()
+        {
+            var genres = new List<Genre>();
+
+            using var conn = Connection;
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"SELECT * FROM Genre";
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                genres.Add(new Genre
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    GenreName = reader.GetString(reader.GetOrdinal("GenreName"))
+                });
+            }
+
+            return genres;
         }
     }
 }

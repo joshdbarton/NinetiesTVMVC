@@ -5,7 +5,23 @@
 }
 
 <h1>Shows From the Nineties</h1>
-
+<form method="post">
+    <div class="row justify-content-start">
+        <div class="col-7">
+            <input asp-for="@Model.QueryString" type="text" class="form-control" placeholder="Show name search" aria-label="Show name search">
+        </div>
+        <select asp-for="@Model.GenreId" class="form-select" aria-label="Genre">
+            <option selected value="0">Any Genre</option>
+            @foreach (var option in Model.Genres)
+            {
+                <option value="@option.Id">@option.GenreName</option>
+            }
+        </select>
+        <div class="col-sm">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </div>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -58,3 +74,41 @@
 }
     </tbody>
 </table>
+<ul class="pagination">
+    @if (Model.Page > 1)
+    {
+        <li class="page-item">
+            <a class="page-link"
+               asp-action="Index"
+               asp-route-search="@ViewContext.HttpContext.Request.Query["search"]"
+               asp-route-genreId="@ViewContext.HttpContext.Request.Query["genreId"]"
+               asp-route-page="@(Model.Page-1)">
+                Previous
+            </a>
+        </li>
+    }
+    @for (var pageNumber = 1; pageNumber <= Model.TotalPages; pageNumber++)
+    {
+        <li class="page-item">
+            <a class="page-link"
+               asp-action="Index"
+               asp-route-search="@ViewContext.HttpContext.Request.Query["search"]"
+               asp-route-genreId="@ViewContext.HttpContext.Request.Query["genreId"]"
+               asp-route-page="@pageNumber">
+                @pageNumber
+            </a>
+        </li>
+    }
+    @if (Model.Page < Model.TotalPages)
+    {
+        <li class="page-item">
+            <a class="page-link"
+               asp-action="Index"
+               asp-route-search="@ViewContext.HttpContext.Request.Query["search"]"
+               asp-route-genreId="@ViewContext.HttpContext.Request.Query["genreId"]"
+               asp-route-page="@(Model.Page+1)">
+                Next
+            </a>
+        </li>
+    }
+</ul>
